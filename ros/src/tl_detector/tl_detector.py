@@ -143,7 +143,7 @@ class TLDetector(object):
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
-        rospy.loginfo("Processing traffic light")
+        # rospy.loginfo("Processing traffic light")
         light = None
         closest_light = None
         stop_line_wp_idx = None

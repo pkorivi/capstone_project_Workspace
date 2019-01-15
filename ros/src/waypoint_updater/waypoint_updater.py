@@ -24,8 +24,10 @@ as well as to verify your TL classifier.
 TODO (for Yousuf and Aaron): Stopline location for each traffic light.
 '''
 
-LOOKAHEAD_WPS = 200 # Number of waypoints we will publish. You can change this number
-MAX_DECEL = 1.0 # TODO update to higher value 
+LOOKAHEAD_WPS = 100 # Number of waypoints we will publish. You can change this number
+MAX_DECEL = 1.5 # TODO update to higher value 
+FREQUENCY = 10
+STOP_EARLY_POINTS = 4
 
 
 class WaypointUpdater(object):
@@ -49,12 +51,12 @@ class WaypointUpdater(object):
         self.loop()
 
     def loop(self):
-        rate = rospy.Rate(50)
+        rate = rospy.Rate(FREQUENCY)
         while not rospy.is_shutdown():
             if not (None in (self.pose, self.waypoint_tree)):
                 self.publish_waypoints()
             rate.sleep()
-            rospy.loginfo("Waypoint updater loop")
+            # rospy.loginfo("Waypoint updater loop")
 
     def get_closest_waypoint_idx(self):
         x = self.pose.pose.position.x
@@ -90,13 +92,13 @@ class WaypointUpdater(object):
             lane.waypoints = sliced_base_waypoints
         else:
             lane.waypoints = self.decelerate_waypoints(sliced_base_waypoints,closest_idx)
-        
+            
         return lane
     
     def decelerate_waypoints(self,waypoints, closest_idx):
         temp = []
-        #stop 2 points early such that whole car stays behind the stop line
-        stop_idx = max(self.stopline_wp_idx - closest_idx - 2, 0)
+        #stop few points early such that whole car stays behind the stop line
+        stop_idx = max(self.stopline_wp_idx - closest_idx - STOP_EARLY_POINTS, 0)
         for i,wp in enumerate(waypoints):
             p= Waypoint()
             p.pose = wp.pose
