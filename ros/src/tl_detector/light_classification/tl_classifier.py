@@ -42,9 +42,12 @@ class TLClassifier(object):
         return TrafficLight.UNKNOWN
 
     def dl_based_classifier(self,image):
-        pass
+        return TrafficLight.UNKNOWN
+    
+    def carla_real_data_classifier(self,image):
+        return TrafficLight.UNKNOWN
 
-    def get_classification(self, image):
+    def get_classification(self, image, method):
         """Determines the color of the traffic light in the image
 
         Args:
@@ -55,5 +58,10 @@ class TLClassifier(object):
 
         """
         #TODO implement light color prediction
-        return self.simple_opencv_red_color_classifier(image)
+        if(method == "opencv"):
+            return self.simple_opencv_red_color_classifier(image)
+        elif(method == "carla"):
+            return self.carla_real_data_classifier(image)
+        else:
+            return self.dl_based_classifier(image)
         
