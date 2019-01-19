@@ -24,7 +24,7 @@ class TLClassifier(object):
         red_count = 0
         for x,contour in enumerate(contours):
             contourarea = cv2.contourArea(contour) #get area of contour
-            if 5 < contourarea < 700: #Discard contours with a too large area as this may just be noise
+            if 15 < contourarea < 700: #Discard contours with a too large area as this may just be noise
                 arclength = cv2.arcLength(contour, True)
                 approxcontour = cv2.approxPolyDP(contour, 0.01 * arclength, True)
                 #Find the coordinates of the polygon with respect to he camera frame in pixels
@@ -43,7 +43,7 @@ class TLClassifier(object):
 
     def dl_based_classifier(self,image):
         return TrafficLight.UNKNOWN
-    
+
     def carla_real_data_classifier(self,image):
         return TrafficLight.UNKNOWN
 
@@ -62,6 +62,5 @@ class TLClassifier(object):
             return self.simple_opencv_red_color_classifier(image)
         elif(method == "carla"):
             return self.carla_real_data_classifier(image)
-        
+
         return self.dl_based_classifier(image)
-        
